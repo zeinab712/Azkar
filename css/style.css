@@ -419,13 +419,10 @@ a:hover{
   width: 60px;
 }
 .section .box button.depleted {
-  background-color: red;
+  background-color: #ab886d73;
   color: #fff;
   cursor: default;
   border: none;
-}
-.section .box button.depleted:hover {
-  background-color: darkred;
 }
 /* ==============================end  main================================= */
 /* ==============================start  footer================================= */
@@ -591,7 +588,7 @@ footer .wave {
   transition: background 0.3s ease, color 0.3s ease;
 }
 .todo ul li.completed {
-  background-color: #493628;
+  background-color: #ab886d73;
   color: #fff;
   text-decoration: line-through;
   text-decoration-thickness: 2px;
