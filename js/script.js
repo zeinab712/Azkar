@@ -55,13 +55,17 @@ document.addEventListener("DOMContentLoaded", function () {
 // ======================= satrt main======================//
 document.addEventListener("DOMContentLoaded", function () {
   const buttons = document.querySelectorAll(".section button");
-  const resetTime = 24 * 60 * 60 * 1000; 
-  const lastReset = localStorage.getItem("lastReset");
-  const now = new Date().getTime();
+  const now = new Date().getTime(); 
 
-  if (!lastReset || now - lastReset > resetTime) {
+  let nextResetTime = localStorage.getItem("nextResetTime");
+
+  if (!nextResetTime || now > nextResetTime) {
+
+    const midnight = new Date();
+    midnight.setHours(24, 0, 0, 0);
+
     localStorage.clear(); 
-    localStorage.setItem("lastReset", now);
+    localStorage.setItem("nextResetTime", midnight.getTime()); 
   }
 
   buttons.forEach((button, index) => {
@@ -93,16 +97,20 @@ document.addEventListener("DOMContentLoaded", function () {
 // ======================= satrt todo===================//
 document.addEventListener("DOMContentLoaded", function () {
   const tasks = document.querySelectorAll("#taskList li");
-  const today = new Date().toDateString(); 
+  const now = new Date().getTime(); 
+
+  let nextResetTime = localStorage.getItem("nextResetTime");
+
+  if (!nextResetTime || now > nextResetTime) {
+
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 0); 
+
+      localStorage.setItem("dailyTasks", JSON.stringify({})); 
+      localStorage.setItem("nextResetTime", midnight.getTime()); 
+  }
 
   let savedTasks = JSON.parse(localStorage.getItem("dailyTasks")) || {};
-  let lastSavedDate = localStorage.getItem("lastSavedDate");
-
-  if (lastSavedDate !== today) {
-      localStorage.setItem("dailyTasks", JSON.stringify({})); 
-      localStorage.setItem("lastSavedDate", today);
-      savedTasks = {};
-  }
 
   tasks.forEach(task => {
       const taskName = task.getAttribute("data-task");
@@ -130,3 +138,34 @@ document.addEventListener("DOMContentLoaded", function() {
       });
   });
 });
+// ======================= start rosary=====================//
+document.addEventListener("DOMContentLoaded", function () {
+  const rosary = document.querySelector(".rosary"); 
+  if (!rosary) return; 
+
+  const buttons = rosary.querySelectorAll(".item button"); 
+  const resetButton = rosary.querySelector(".zero"); 
+
+  buttons.forEach((button, index) => {
+    let storedCount = localStorage.getItem(`rosary_button_${index}`); 
+    if (storedCount !== null) {
+      button.innerText = storedCount; 
+    }
+
+    button.addEventListener("click", function () {
+      let count = parseInt(this.innerText) || 0;
+      count++;
+      this.innerText = count;
+      localStorage.setItem(`rosary_button_${index}`, count);
+    });
+  });
+
+  resetButton.addEventListener("click", function () {
+    buttons.forEach((button, index) => {
+      button.innerText = "0"; 
+      localStorage.setItem(`rosary_button_${index}`, "0"); 
+    });
+  });
+});
+// ======================= end rosary=====================//
+
